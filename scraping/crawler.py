@@ -3,6 +3,14 @@ import requests
 from urlparse import urlparse
 
 
+def get_arg(index, default=None):
+
+    try:
+        return sys.argv[index]
+    except IndexError:
+        return default
+
+
 class Search(object):
     def __init__(self, url):
         self.url = url
@@ -68,8 +76,6 @@ class CrawlFilmEpisodeList(Search):
 
         seasonlist = soup.findAll("div", {"class": "episodes-list"})
 
-        # print seasonlist
-
         for season in seasonlist:
             episodelist = season.findAll("li")
             for episode in episodelist:
@@ -77,8 +83,8 @@ class CrawlFilmEpisodeList(Search):
                 if 'http' not in url:
                     url = self.getBaseUrl() + url
                 if filter_url == url:
-                    seasonTxt = season.find('div', {'class': 'season-num'}).text
-                    filmInfo['Season'] = seasonTxt.split(' ')[1]
+                    seasonInfo = season.find('div', {'class': 'season-num'}).text
+                    filmInfo['Season'] = seasonInfo.split(' ')[1]
                     filmInfo['Episode'] = episode.find('span', {'class': 'epnum'}).text
                     break
         return filmInfo
@@ -108,7 +114,10 @@ class CrawlFilmEpisodeInfo(Search):
 
 
 if __name__ == '__main__':
-    keyword = raw_input("=====Type Input Keyword====")
+    if get_arg(1):
+        keyword = get_arg(1)
+    else:
+        keyword = raw_input("=====Type Input Keyword====")
     url = "http://myputlocker.me/?s=" + keyword
     data = ScrapingFilmList(url)
     filmlist = []
