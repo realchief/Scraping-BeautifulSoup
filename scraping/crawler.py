@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 from urlparse import urlparse
+import sys
 
 
 def get_arg(index, default=None):
