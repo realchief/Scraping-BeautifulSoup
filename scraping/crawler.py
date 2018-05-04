@@ -14,24 +14,24 @@ class Search(object):
             return None
 
     def getBaseUrl(self):
-        parsedUrl = urlparse(self.url)
-        baseUrl = parsedUrl.scheme + "://" + parsedUrl.netloc
+        Url = urlparse(self.url)
+        baseUrl = Url.scheme + "://" + Url.netloc
         return baseUrl
 
 
-class CrawlFilmList(Search):
+class ScrapingFilmList(Search):
     def __init__(self, url):
-        super(CrawlFilmList, self).__init__(url)
+        super(ScrapingFilmList, self).__init__(url)
 
     def getFilmList(self):
         soup = self.getSoupFile()
         if soup is None:
             return list()
 
-        filmlistbox = soup.findAll("div", {"class": "item-img"})
+        filmlists = soup.findAll("div", {"class": "item-img"})
 
         urls = []
-        for filmlist in filmlistbox:
+        for filmlist in filmlists:
             url = filmlist.a['href']
             if 'http' not in url:
                 url = self.getBaseUrl() + url
@@ -108,11 +108,11 @@ class CrawlFilmEpisodeInfo(Search):
 
 
 if __name__ == '__main__':
-    keyword = raw_input("Type Input Keyword:")
+    keyword = raw_input("=====Type Input Keyword====")
     url = "http://myputlocker.me/?s=" + keyword
-    c = CrawlFilmList(url)
+    data = ScrapingFilmList(url)
     filmlist = []
-    filmlist += c.getFilmList()
+    filmlist += data.getFilmList()
 
     for filmurl in filmlist:
         episodecrawler = CrawlFilmEpisodeList(filmurl)
